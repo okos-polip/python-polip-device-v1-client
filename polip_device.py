@@ -27,7 +27,7 @@ class PolipDevice:
 
     def check_server_status(self):
         try:
-            response = requests.get(self.url + "/api/v1/")
+            response = requests.get(self.url + "/api/device/v1/health/check")
             if response.status_code != 200:
                 raise Exception("Server returned non-200 status code")
         except Exception as error:
@@ -42,7 +42,7 @@ class PolipDevice:
             "manufacturer": manufacturer,
         }
 
-        res = self._request_template(self.url + "/api/v1/device/poll?" + urlencode(params))
+        res = self._request_template(self.url + "/api/device/v1/poll?" + urlencode(params))
         print(res)
         return res
 
@@ -50,7 +50,7 @@ class PolipDevice:
         if not isinstance(state_obj, dict) or state_obj is None:
             raise Exception("Invalid parameterization: sensor object must be provided")
 
-        res = self._request_template(self.url + "/api/v1/device/push", {"state": state_obj})
+        res = self._request_template(self.url + "/api/device/v1/push", {"state": state_obj})
         print(res)
         return res
 
@@ -61,7 +61,7 @@ class PolipDevice:
         message = str(message)
         error_code = int(error_code)
 
-        res = self._request_template(self.url + "/api/v1/device/error", {"code": error_code, "message": message})
+        res = self._request_template(self.url + "/api/device/v1/error", {"code": error_code, "message": message})
         print(res)
         return res
 
@@ -69,11 +69,11 @@ class PolipDevice:
         if not isinstance(sensors_obj, dict) or sensors_obj is None:
             raise Exception("Invalid parameterization: sensor object must be provided")
 
-        res = self._request_template(self.url + "/api/v1/device/sense", {"sense": sensors_obj})
+        res = self._request_template(self.url + "/api/device/v1/sense", {"sense": sensors_obj})
         return res
 
     def get_value(self):
-        res = self._request_template(self.url + "/api/v1/device/value", skip_value=True, skip_tag=True)
+        res = self._request_template(self.url + "/api/device/v1/value", skip_value=True, skip_tag=True)
         self.value = res["value"]
         print(res)
         return res
@@ -84,12 +84,12 @@ class PolipDevice:
         elif rpc_obj.get("result") is None:
             raise Exception("Invalid parameterization: RPC must have result")
 
-        res = self._request_template(self.url + "/api/v1/device/rpc", {"rpc": rpc_obj})
+        res = self._request_template(self.url + "/api/device/v1/rpc", {"rpc": rpc_obj})
         print(res)
         return res
 
     def get_schema(self):
-        res = self._request_template(self.url + "/api/v1/device/schema")
+        res = self._request_template(self.url + "/api/device/v1/schema")
         print(res)
         return res
 
